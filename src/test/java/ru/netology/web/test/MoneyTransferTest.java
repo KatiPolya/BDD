@@ -5,12 +5,11 @@ import org.junit.jupiter.api.Test;
 import ru.netology.web.data.DataHelper;
 import ru.netology.web.page.*;
 import ru.netology.web.page.LoginPage;
-import ru.netology.web.page.LoginPage;
-import ru.netology.web.page.LoginPage;
 
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.open;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class MoneyTransferTest {
     @Test
@@ -22,15 +21,18 @@ class MoneyTransferTest {
         var verificationCode = DataHelper.getVerificationCodeFor(authInfo);
         verificationPage.validVerify(verificationCode);
         var dashboardPage = new DashboardPage();
-        int balance = dashboardPage.getFirstCardBalance();
+        int firstCardBalance = dashboardPage.getFirstCardBalance();
+        int secondCardBalance = dashboardPage.getSecondCardBalance();
+
         dashboardPage.chooseFirstCard();
         var secondCardInfo = DataHelper.getSecondCardInfo();
-        var paymentPageFirstCard = new PaymentPageFirstCard();
+        var paymentPage = new PaymentPage();
         int amount = 200;
-        paymentPageFirstCard.PaymentFirstCard(secondCardInfo, amount);
-        int newBalance = balance + amount;
-        $(byText(String.valueOf(newBalance))).shouldBe(Condition.visible);
-
+        paymentPage.paymentFirstCard(secondCardInfo, amount);
+        int newFirstCardBalance = firstCardBalance + amount;
+        int newSecondCardBalance = secondCardBalance - amount;
+        assertEquals(newFirstCardBalance, dashboardPage.getFirstCardBalance());
+        assertEquals(newSecondCardBalance, dashboardPage.getSecondCardBalance());
 
     }
 
@@ -43,14 +45,20 @@ class MoneyTransferTest {
         var verificationCode = DataHelper.getVerificationCodeFor(authInfo);
         verificationPage.validVerify(verificationCode);
         var dashboardPage = new DashboardPage();
-        int balance = dashboardPage.getSecondCardBalance();
+        int firstCardBalance = dashboardPage.getFirstCardBalance();
+        int secondCardBalance = dashboardPage.getSecondCardBalance();
+
         dashboardPage.chooseSecondCard();
         var firstCardInfo = DataHelper.getFirstCardInfo();
-        var paymentPageSecondCard = new PaymentPageSecondCard();
+        var paymentPage = new PaymentPage();
         int amount = 400;
-        paymentPageSecondCard.PaymentSecondCard(firstCardInfo, amount);
-        int newBalance = balance + amount;
-        $(byText(String.valueOf(newBalance))).shouldBe(Condition.visible);
+        paymentPage.paymentSecondCard(firstCardInfo, amount);
+
+        int newFirstCardBalance = firstCardBalance - amount;
+        int newSecondCardBalance = secondCardBalance + amount;
+
+        assertEquals(newFirstCardBalance, dashboardPage.getFirstCardBalance());
+        assertEquals(newSecondCardBalance, dashboardPage.getSecondCardBalance());
 
     }
 }

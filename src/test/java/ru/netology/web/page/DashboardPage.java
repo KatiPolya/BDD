@@ -31,15 +31,15 @@ public class DashboardPage {
         return Integer.parseInt(value);
     }
 
-    public PaymentPageFirstCard chooseFirstCard() {
+    public PaymentPage chooseFirstCard() {
         ElementsCollection bottoms = $$("[data-test-id=\"action-deposit\"]");
         bottoms.first().click();
-        return new PaymentPageFirstCard();
+        return new PaymentPage();
     }
 
-    public PaymentPageSecondCard chooseSecondCard() {
+    public PaymentPage chooseSecondCard() {
         ElementsCollection bottoms = $$("[data-test-id=\"action-deposit\"]");
         bottoms.last().click();
-        return new PaymentPageSecondCard();
+        return new PaymentPage();
     }
 }
